@@ -1,0 +1,183 @@
+Feature: Login functionality
+
+  Scenario: Successful login with standard user
+    Given I am on the SauceDemo login page
+    When I enter username "standard_user"
+    And I enter password "secret_sauce"
+    And I click the "Login" button
+    Then I should be redirected to the homepage
+    And I should see the inventory list
+
+  Scenario: Unsuccessful login with locked out user
+    Given I am on the SauceDemo login page
+    When I enter username "locked_out_user"
+    And I enter password "secret_sauce"
+    And I click the "Login" button
+    Then I should see an error message "Epic sadface: Sorry, this user has been locked out."
+
+  Scenario: Unsuccessful login with problem user
+    Given I am on the SauceDemo login page
+    When I enter username "problem_user"
+    And I enter password "secret_sauce"
+    And I click the "Login" button
+    Then I should be redirected to the homepage
+    But I may encounter issues with item images not loading properly
+
+  Scenario: Unsuccessful login with performance glitch user
+    Given I am on the SauceDemo login page
+    When I enter username "performance_glitch_user"
+    And I enter password "secret_sauce"
+    And I click the "Login" button
+    Then I should experience a delayed login process
+    But I should eventually be redirected to the homepage
+    
+  Scenario: Handling errors when logged in as error_user
+    Given I am logged in as an "error_user"
+    And I am on the SauceDemo homepage
+    When I navigate through the homepage
+    Then I should see broken or malfunctioning UI elements
+    And some features should be non-functional
+    And I should report these issues for further investigation
+
+  Scenario: Visual errors when logged in as visual_user
+    Given I am logged in as a "visual_user"
+    And I am on the SauceDemo homepage
+    When I navigate through the homepage
+    Then I should observe UI/UX elements overlapping or misaligned
+    And I should see that certain elements are not displayed correctly or are hidden behind others
+    And I should report these visual errors for further investigation
+    
+  Scenario: Unsuccessful login with incorrect credentials
+    Given I am on the SauceDemo login page
+    When I enter username "invalid_user"
+    And I enter password "wrong_password"
+    And I click the "Login" button
+    Then I should see an error message "Epic sadface: Username and password do not match any user in this service"
+
+Feature: Adding and removing items on homepage and inventory-item page
+
+  Scenario: Add a single item to the cart from the homepage
+    Given I am logged in as a "standard_user"
+    And I am on the homepage
+    When I add the first item to the cart
+    Then the cart icon should display "1"
+
+  Scenario: Add multiple items to the cart from the homepage
+    Given I am logged in as a "standard_user"
+    And I am on the homepage
+    When I add multiple items to the cart
+    Then the cart icon should display the correct number of items added
+
+  Scenario: Remove an item from the cart on the homepage
+    Given I have added items to the cart
+    When I remove one item from the cart on the homepage
+    Then the cart icon should display the correct number of items remaining
+
+  Scenario: Add an item to the cart from the inventory-item page
+    Given I am on the inventory-item page
+    When I click the "Add to cart" button
+    Then the cart icon should display "1"
+
+  Scenario: Remove an item from the cart on the inventory-item page
+    Given I have added an item to the cart
+    When I click the "Remove" button on the inventory-item page
+    Then the cart icon should not display any number
+
+Feature: Homepage navigation, sorting, and burger menu
+
+  Scenario: Navigate to the inventory item page from the homepage
+    Given I am logged in as a "standard_user"
+    And I am on the homepage
+    When I click on an item title
+    Then I should be redirected to the inventory-item page
+    And I should see the item details
+
+  Scenario: Sort items by name in ascending order (A-Z)
+    Given I am logged in as a "standard_user"
+    And I am on the homepage
+    When I sort items by name in ascending order (A-Z)
+    Then the items should be displayed in the correct alphabetical order
+
+  Scenario: Sort items by name in descending order (Z-A)
+    Given I am logged in as a "standard_user"
+    And I am on the homepage
+    When I sort items by name in descending order (Z-A)
+    Then the items should be displayed in the correct reverse alphabetical order
+
+  Scenario: Sort items by price from low to high
+    Given I am logged in as a "standard_user"
+    And I am on the homepage
+    When I sort items by price from low to high
+    Then the items should be displayed from the cheapest to the most expensive
+
+  Scenario: Sort items by price from high to low
+    Given I am logged in as a "standard_user"
+    And I am on the homepage
+    When I sort items by price from high to low
+    Then the items should be displayed from the most expensive to the cheapest
+
+  Scenario: Use the burger menu to navigate to the All Items page
+    Given I am logged in as a "standard_user"
+    And I am on the homepage
+    When I click the burger menu icon
+    And I select "All Items"
+    Then I should be on the homepage
+
+  Scenario: Use the burger menu to logout
+    Given I am logged in as a "standard_user"
+    When I click the burger menu icon
+    And I select "Logout"
+    Then I should be redirected to the login page
+Feature: Checkout process
+
+  Scenario: Begin checkout with items in the cart
+    Given I am logged in as a "standard_user"
+    And I have items in my cart
+    When I click the cart icon
+    And I click the "Checkout" button
+    Then I should be redirected to the checkout-step-one page
+
+  Scenario: Checkout button is disabled when the cart is empty
+    Given I am logged in as a "standard_user"
+    And I am on the cart page with no items
+    Then the "Checkout" button should be disabled
+
+  Scenario: Error on checkout when required fields are missing
+    Given I am on the checkout-step-one page
+    When I leave the first name, last name, or postal code empty
+    And I click the "Continue" button
+    Then I should see an error message "Error: First Name is required"
+
+  Scenario: Successful checkout process
+    Given I have filled in all required fields on the checkout-step-one page
+    When I click the "Continue" button
+    Then I should be redirected to the checkout-step-two page
+
+  Scenario: Navigate back to cart from checkout-step-one page
+    Given I am on the checkout-step-one page
+    When I click the "Cancel" button
+    Then I should be redirected to the cart page
+
+  Scenario: Complete checkout
+    Given I am on the checkout-step-two page
+    When I click the "Finish" button
+    Then I should see a confirmation message "Thank you for your order!"
+
+Feature: Handle unauthorized and CORS errors
+
+  Scenario: Handle 401 Unauthorized error on API request
+    Given I am logged in as a "standard_user"
+    And I am on the SauceDemo homepage
+    When I perform an action that triggers an API request
+    And the API returns a "401 Unauthorized" status
+    Then I should see an error message "Unauthorized: Please check your credentials."
+    And I should not be able to proceed with the action
+
+  Scenario: Handle CORS error on API request
+    Given I am logged in as a "standard_user"
+    And I am on the SauceDemo homepage
+    When I perform an action that triggers an API request
+    And the request is blocked by CORS policy
+    Then I should see an error message "CORS Error: Unable to complete the request."
+    And the application should log the error for further investigation
+

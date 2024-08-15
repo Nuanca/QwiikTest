@@ -1,0 +1,25 @@
+Link Postman = https://api.postman.com/collections/37680403-017cba1e-d840-49da-96c8-2f1c6aebece0?access_key=PMAT-01J5A5HSZ7Q4CVN1HG4CDG044W
+
+-- Create User
+curl --location 'https://gorest.co.in/public/v2/users' \
+--header 'Authorization: Bearer e258707c0a4d4583e2e8383fb16c1ae0b69db7a34840c842701fc8c198396450' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+  "name": "Test Test",
+  "gender": "female",
+  "email": "Test.Test@example.com",
+  "status": "active"
+}'
+
+--- Get user details
+curl --location 'https://gorest.co.in/public/v2/users/7344872' \
+--header 'Authorization: Bearer e258707c0a4d4583e2e8383fb16c1ae0b69db7a34840c842701fc8c198396450'
+
+-- Update user details 
+curl --location --request PUT 'https://gorest.co.in/public/v2/users/7344872' \
+--header 'Authorization: Bearer e258707c0a4d4583e2e8383fb16c1ae0b69db7a34840c842701fc8c198396450' \
+--header 'Content-Type: application/json' \
+--data '{
+  "name": "TestTest Qwiik",
+  "status": "inactive"
+}'
